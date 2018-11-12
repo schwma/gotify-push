@@ -1,0 +1,9 @@
+url: 'https://notify.example.com'
+default:
+  token: '<app_token_here>'
+  title: 'Server'
+  message: 'Hey! listen!'
+  priority: 10
+tokenMap:
+  cron: '<cron_app_token_here>'
+  ssh: '<ssh_app_token_here>'
