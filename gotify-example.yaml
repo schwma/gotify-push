@@ -4,7 +4,7 @@ url: 'https://notify.example.com'
 default:
   token: '<app_token_here>'
   title: 'Server'
-  message: 'Hey! listen!'
+  message: 'Hey! Listen!'
   priority: 10
 # Token map to map keys to tokens
 tokenMap:

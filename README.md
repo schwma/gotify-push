@@ -1,4 +1,4 @@
-# gotify-cli-app - A simple Gotify cli push client
+# gotify-cli-app - A simple CLI client for the Gotify REST-API
 
 `gotify-cli-app` is a simple command line client that pushes notifications to the awesome [Gotify](https://github.com/gotify/server) REST-API. It works by setting default values for all required notification parameters, allowing you to override single parameters. This means you don't need to remember the syntax of `curl` or your server's URL and application tokens. You can even run `gotify-cli-app` without any parameters to send a predefined notification with default parameters.
 
@@ -31,12 +31,15 @@ chmod a+x /ust/local/bin/gotify-cli-app
 The configuration file is a simple YAML file with the following structure:
 
 ```yaml
+# Url of the Gotify server (including the protocol to use)
 url: 'https://notify.example.com'
+# Default notification parameters
 default:
   token: '<app_token_here>'
   title: 'Server'
-  message: 'Hey, listen!'
+  message: 'Hey! Listen!'
   priority: 10
+# Token map to map keys to tokens
 tokenMap:
   cron: '<cron_app_token_here>'
   ssh: '<ssh_app_token_here>'
@@ -128,7 +131,7 @@ gotify-cli-app -t "Hello" -m "Hello World" -p 10
 * To run gotify-cli-app with a different application token run:
 
 ```bash
-gotify-cli-app -a <app_token_here> -t "Hello" -m "Hello World!
+gotify-cli-app -a <app_token_here> -t "Hello" -m "Hello World"
 ```
 
 where `<app_token_here>` is the gotify app token.
