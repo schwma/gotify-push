@@ -11,30 +11,56 @@ APP_NAME = 'gotify-cli-app'
 CONFIG_NAME = 'gotify'
 
 def main():
-    # Load config file from predefined locations
-    config = loadConfig()
-
     # Argument declaration
     parser = argparse.ArgumentParser(description='Gotify cli')
     group = parser.add_mutually_exclusive_group()
-    group.add_argument('-a', '--app-token', default=config['default']['token'], help='gotify app token to which to send the notification')
+    parser.add_argument('-c', '--config', help='file path of a yaml config file')
+    group.add_argument('-a', '--app-token', help='gotify app token to which to send the notification')
     group.add_argument('-k', '--key', help='lookup token from key in the config file')
-    parser.add_argument('-t', '--title', default=config['default']['title'], help='the title of the notification')
-    parser.add_argument('-m', '--message', default=config['default']['message'], help='the message of the notification (\'-\' to read from stdin)')
-    parser.add_argument('-p', '--priority', type=int, default=config['default']['priority'], help='the priority of the notification')
+    parser.add_argument('-t', '--title', help='the title of the notification')
+    parser.add_argument('-m', '--message', help='the message of the notification (\'-\' to read from stdin)')
+    parser.add_argument('-p', '--priority', type=int, help='the priority of the notification')
     args = parser.parse_args()
+
+    # Load config
+    if args.config:
+        # Load config from path provided as argument
+        config = loadConfig(args.config)
+    else:
+        # Load config file from predefined locations
+        config = loadDefaultConfig();
 
     # Load args into variables
     url = config['url']
+
+    # Load app token (either from map, from argument, or default from config)
     if args.key:
         token = loadTokenFromKey(config, args.key)
     else:
-        token = args.app_token
-    title = args.title
-    message = args.message
-    if message is '-':
-        message = sys.stdin.buffer.read()
-    priority = args.priority
+        if args.app_token:
+            token = args.app_token
+        else:
+            token = config['default']['token']
+
+    # Load title (either from argument, or default from config)
+    if args.title:
+        title = args.title
+    else:
+        title = config['default']['title']
+
+    # Load message (either from argument, from stdin, or default from config)
+    if args.message:
+        message = args.message
+        if message is '-':
+            message = sys.stdin.buffer.read()
+    else:
+        message = config['default']['message']
+
+    # Load priority (either from argument, or default from config)
+    if args.priority:
+        priority = args.priority
+    else:
+        priority = config['default']['priority']
 
     # Perform request
     resp = doRequest(url, token, title, message, priority)
@@ -43,7 +69,17 @@ def main():
     if resp.status_code is not requests.codes.ok:
         sys.exit(bytes.decode(resp.content))
 
-def loadConfig():
+def loadConfig(configFile):
+    if os.path.isfile(configFile):
+        file = open(configFile, 'r')
+        yamlString = file.read()
+        file.close()
+    else:
+        sys.exit('Could not load config: ' + path)
+
+    return yaml.load(yamlString)
+
+def loadDefaultConfig():
     HOME = os.path.expanduser('~')
     configFileLocations = [
             '/etc/' + APP_NAME + '/' + CONFIG_NAME + '.yml',
