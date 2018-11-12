@@ -1,9 +1,12 @@
+# Url of the Gotify server (including the protocol to use)
 url: 'https://notify.example.com'
+# Default notification parameters
 default:
   token: '<app_token_here>'
   title: 'Server'
   message: 'Hey! listen!'
   priority: 10
+# Token map to map keys to tokens
 tokenMap:
   cron: '<cron_app_token_here>'
   ssh: '<ssh_app_token_here>'
