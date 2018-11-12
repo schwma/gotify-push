@@ -11,27 +11,42 @@ APP_NAME = 'gotify-cli-app'
 CONFIG_NAME = 'gotify'
 
 def main():
-    # Argument declaration
+    # Argument parser declaration
     parser = argparse.ArgumentParser(description='Gotify cli')
-    group = parser.add_mutually_exclusive_group()
-    parser.add_argument('-c', '--config', help='file path of a yaml config file')
-    group.add_argument('-a', '--app-token', help='gotify app token to which to send the notification')
-    group.add_argument('-k', '--key', help='lookup token from key in the config file')
+    groupUrlOrConfig = parser.add_mutually_exclusive_group()
+    groupUrlOrConfig.add_argument('-u', '--url', help='url of Gotify server (overrides config)')
+    groupUrlOrConfig.add_argument('-c', '--config', help='file path of a yaml config file')
+    groupTokenOrKey = parser.add_mutually_exclusive_group()
+    groupTokenOrKey.add_argument('-a', '--app-token', help='gotify app token to which to send the notification')
+    groupTokenOrKey.add_argument('-k', '--key', help='lookup token from key in the config file')
     parser.add_argument('-t', '--title', help='the title of the notification')
     parser.add_argument('-m', '--message', help='the message of the notification (\'-\' to read from stdin)')
     parser.add_argument('-p', '--priority', type=int, help='the priority of the notification')
     args = parser.parse_args()
 
-    # Load config
-    if args.config:
-        # Load config from path provided as argument
-        config = loadConfig(args.config)
-    else:
-        # Load config file from predefined locations
-        config = loadDefaultConfig();
+    # The messy default value assigments below are unfortunately necessary since
+    # default values may be loaded from a config file supplied as an argument
 
-    # Load args into variables
-    url = config['url']
+    # Check if url argument supplied (if so, don't load config)
+    if args.url:
+        # This check is necessary since at this point in time argparse does not
+        # yet support "necessarily inclusive" groups
+        # (https://bugs.python.org/issue11588)
+        if not (args.app_token and args.title and args.message) or args.key:
+            sys.exit('The following arguments are required when using url argument:\n-a/--app-token -t/--title -m/--message -p/--priority\nAlso -k/--key argument may not be used with url argument')
+        # Load url from argument
+        else:
+            url = args.url
+    else:
+        # Load config
+        if args.config:
+            # Load config from path provided as argument
+            config = loadConfig(args.config)
+        else:
+            # Load config file from predefined locations
+            config = loadDefaultConfig()
+        # Load url from config
+        url = config['url']
 
     # Load app token (either from map, from argument, or default from config)
     if args.key:
