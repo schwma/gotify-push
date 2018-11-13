@@ -59,45 +59,39 @@ def parseURLAndConfig(args):
             sys.exit('The following arguments are required when using url argument:\n-a/--app-token -t/--title -m/--message -p/--priority\nAlso -k/--key argument may not be used with url argument')
         # Load url from argument
         return args.url
+    # Load config
+    if args.config:
+        # Load config from path provided as argument
+        config = loadConfig(args.config)
     else:
-        # Load config
-        if args.config:
-            # Load config from path provided as argument
-            config = loadConfig(args.config)
-        else:
-            # Load config file from predefined locations
-            config = loadDefaultConfig()
-        # Load url from config
-        return config['url']
+        # Load config file from predefined locations
+        config = loadDefaultConfig()
+    # Load url from config
+    return config['url']
 
 def parseToken(args):
     if args.key:
         return loadTokenFromKey(config, args.key)
-    else:
-        if args.app_token:
-            return args.app_token
-        else:
-            return config['default']['token']
+    if args.app_token:
+        return args.app_token
+    return config['default']['token']
 
 def parseTitle(args):
     if args.title:
         return args.title
-    else:
-        return config['default']['title']
+    return config['default']['title']
 
 def parseMessage(args):
     if args.message:
         return args.message
         if message is '-':
             return sys.stdin.buffer.read()
-    else:
-        return config['default']['message']
+    return config['default']['message']
 
 def parsePriority(args):
     if args.priority:
         return args.priority
-    else:
-        return config['default']['priority']
+    return config['default']['priority']
 
 def loadConfig(configFile):
     if os.path.isfile(configFile):
