@@ -1,6 +1,6 @@
 # gotify-cli-app - A simple CLI client for the Gotify REST-API
 
-`gotify-cli-app` is a simple command line client that pushes notifications to the awesome [Gotify](https://github.com/gotify/server) REST-API. It works by setting default values for all required notification parameters, allowing you to override single parameters. This means you don't need to remember the syntax of `curl` or your server's URL and application tokens. You can even run `gotify-cli-app` without any parameters to send a predefined notification with default parameters.
+`gotify-cli-app` is a simple command line client, written in python, that pushes notifications to the awesome [Gotify](https://github.com/gotify/server) REST-API. It works by setting default values for all required notification parameters, allowing you to override single parameters. This means you don't need to remember the syntax of `curl` or your server's URL and application tokens. You can even run `gotify-cli-app` without any parameters to send a predefined notification with default parameters.
 
 ## Installation
 
@@ -14,16 +14,16 @@ pip3 install -r requirements.txt
 
 Then copy and rename the `gotify-example.yaml` file to `gotify.yaml`. Edit the configuation file to suit your needs and place it in one of the locations described in the [configuration](#default-config-file-locations) section.
 
-Install the script by copying it to a folder in your system's path, such as `/usr/local/bin`. You may also wish to rename the command in this step to for example if you want to have a shorter command to call.
+Install the script by copying it to a folder in your system's path, such as `/usr/local/bin`. Feel free to rename the script in this step if you wish to do so.
 
 ```bash
 cp gotify-cli-app /usr/local/bin/.
 ```
 
-Make sure that the script is executable for all required users. For example, to make gotify-cli-app executable by all users:
+Make sure that the script is executable for all required users. For example, to make `gotify-cli-app` executable by all users:
 
 ```bash
-chmod a+x /ust/local/bin/gotify-cli-app
+chmod a+x /usr/local/bin/gotify-cli-app
 ```
 
 ## Configuration
@@ -66,7 +66,7 @@ Entries that are higher up in this list will overwrite entries below it if multi
 
 ### tokenMap
 
-One feature of `gotify-cli-app` is the `tokenMap` defined in the configuration file. This file assigns human readable names (known as keys) to application tokens. This allows you to send notifications to different Gotify apps without having to remember their application tokens.
+One feature of `gotify-cli-app` is the `tokenMap` defined in the configuration file. This file assigns human readable names (known as `key`s in `gotify-cli-app`) to application tokens. This allows you to send notifications to different Gotify apps without having to remember their application tokens.
 
 An entry of the `tokenMap` looks like this:
 
@@ -90,7 +90,7 @@ gotify-cli-app -c /path/to/config-file.yaml
 
 ### Running gotify-cli-app without a config file
 
-To run `gotify-cli-app` withour a config file the following arguments must be provided:
+To run `gotify-cli-app` without a config file the following arguments must be provided:
 
 ```bash
 gotify-cli-app -u https://notify.example.com -a <app_token_here>  -t "Hello" -m "Hello World" -p 10
@@ -98,7 +98,7 @@ gotify-cli-app -u https://notify.example.com -a <app_token_here>  -t "Hello" -m 
 
 ## Usage
 
-* Running gotify-cli-app with all default values read from a config file is as simple as running:
+* Running `gotify-cli-app` with all default values read from a config file is as simple as running:
 
 ```bash
 gotify-cli-app
@@ -116,19 +116,19 @@ gotify-cli-app --help
 gotify-cli-app -t "Hello" -m "Hello World"
 ```
 
-* Pipe a message from stdin (notice the `-` following the `-m/--message` argument):
+* Pipe a message from `stdin` (notice the `-` following the `-m/--message` argument):
 
 ```bash
 echo "Hello World" | gotify-cli-app -t "Hello" -m -
 ```
 
-* Running gotify-app-cli with a different notification priority:
+* Running `gotify-cli-app` with a different notification priority:
 
 ```bash
 gotify-cli-app -t "Hello" -m "Hello World" -p 10
 ```
 
-* To run gotify-cli-app with a different application token run:
+* To run `gotify-cli-app` with a different application token run:
 
 ```bash
 gotify-cli-app -a <app_token_here> -t "Hello" -m "Hello World"
