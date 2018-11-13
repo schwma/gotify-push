@@ -51,16 +51,16 @@ def parseArgs():
 def parseURLAndConfig(args):
     # Declare variable config as reference to global config variable in this function
     global config
-    if args.url:
+    if args.url is not None:
         # This check is necessary since at this point in time argparse does not
         # yet support "necessarily inclusive" groups
         # (https://bugs.python.org/issue11588)
-        if not (args.app_token and args.title and args.message) or args.key:
+        if not (args.app_token is not None and args.title is not None and args.message is not None and args.priority is not None) or args.key is not None:
             sys.exit('The following arguments are required when using url argument:\n-a/--app-token -t/--title -m/--message -p/--priority\nAlso -k/--key argument may not be used with url argument')
         # Load url from argument
         return args.url
     # Load config
-    if args.config:
+    if args.config is not None:
         # Load config from path provided as argument
         config = loadConfig(args.config)
     else:
@@ -70,26 +70,26 @@ def parseURLAndConfig(args):
     return config['url']
 
 def parseToken(args):
-    if args.key:
+    if args.key is not None:
         return loadTokenFromKey(config, args.key)
-    if args.app_token:
+    if args.app_token is not None:
         return args.app_token
     return config['default']['token']
 
 def parseTitle(args):
-    if args.title:
+    if args.title is not None:
         return args.title
     return config['default']['title']
 
 def parseMessage(args):
-    if args.message:
+    if args.message is not None:
         if args.message is '-':
             return sys.stdin.buffer.read()
         return args.message
     return config['default']['message']
 
 def parsePriority(args):
-    if args.priority:
+    if args.priority is not None:
         return args.priority
     return config['default']['priority']
 
