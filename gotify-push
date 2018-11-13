@@ -7,7 +7,7 @@ import fileinput
 from urllib.parse import urljoin
 import requests
 
-APP_NAME = 'gotify-cli-app'
+APP_NAME = 'gotify-push'
 CONFIG_NAME = 'gotify'
 
 config = None
