@@ -83,9 +83,9 @@ def parseTitle(args):
 
 def parseMessage(args):
     if args.message:
-        return args.message
-        if message is '-':
+        if args.message is '-':
             return sys.stdin.buffer.read()
+        return args.message
     return config['default']['message']
 
 def parsePriority(args):
