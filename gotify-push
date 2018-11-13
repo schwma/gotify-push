@@ -103,19 +103,7 @@ def loadConfig(configFile):
     return yaml.load(yamlString)
 
 def loadDefaultConfig():
-    HOME = os.path.expanduser('~')
-    configFileLocations = [
-            '/etc/' + APP_NAME + '/' + CONFIG_NAME + '.yml',
-            '/etc/' + APP_NAME + '/' + CONFIG_NAME + '.yaml',
-            HOME + '/.' + APP_NAME + '/' + CONFIG_NAME + '.yml',
-            HOME + '/.' + APP_NAME + '/' + CONFIG_NAME + '.yaml',
-            HOME + '/.config/' + APP_NAME + '/' + CONFIG_NAME + '.yml',
-            HOME + '/.config/' + APP_NAME + '/' + CONFIG_NAME + '.yaml',
-            HOME + '.' + CONFIG_NAME + '.yml',
-            HOME + '.' + CONFIG_NAME + '.yaml',
-            './' + CONFIG_NAME + '.yml',
-            './' + CONFIG_NAME + '.yaml'
-    ]
+    configFileLocations = getDefaultConfigFileLocations()
 
     configLoaded = False
 
@@ -129,9 +117,27 @@ def loadDefaultConfig():
 
     # Exit with error if no config was loaded
     if not configLoaded:
-        sys.exit('No config file found!')
+        configFileLocations = '\n'.join(map(str, getDefaultConfigFileLocations()))
+        sys.exit('No config file found! Possible locations are:\n' + configFileLocations)
 
     return yaml.load(yamlString)
+
+def getDefaultConfigFileLocations():
+    HOME = os.path.expanduser('~')
+    configFileLocations = [
+            '/etc/' + APP_NAME + '/' + CONFIG_NAME + '.yml',
+            '/etc/' + APP_NAME + '/' + CONFIG_NAME + '.yaml',
+            HOME + '/.' + APP_NAME + '/' + CONFIG_NAME + '.yml',
+            HOME + '/.' + APP_NAME + '/' + CONFIG_NAME + '.yaml',
+            HOME + '/.config/' + APP_NAME + '/' + CONFIG_NAME + '.yml',
+            HOME + '/.config/' + APP_NAME + '/' + CONFIG_NAME + '.yaml',
+            HOME + '.' + CONFIG_NAME + '.yml',
+            HOME + '.' + CONFIG_NAME + '.yaml',
+            './' + CONFIG_NAME + '.yml',
+            './' + CONFIG_NAME + '.yaml'
+    ]
+    return configFileLocations
+
 
 def loadTokenFromKey(config, key):
     # Lookup if key exists in token Map
