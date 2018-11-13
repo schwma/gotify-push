@@ -13,7 +13,7 @@ CONFIG_NAME = 'gotify'
 config = None
 
 def main():
-    # Parde and declare arguments
+    # Parse and declare arguments
     args = parseArgs()
 
     # Check if url argument supplied (if so, don't load config)
@@ -36,7 +36,7 @@ def main():
 
 def parseArgs():
     # Argument parser declaration
-    parser = argparse.ArgumentParser(description='Gotify cli')
+    parser = argparse.ArgumentParser(description='A simple CLI client that pushes notifications to the Gotify REST-API. Can also read and use default values from config files.')
     groupUrlOrConfig = parser.add_mutually_exclusive_group()
     groupUrlOrConfig.add_argument('-u', '--url', help='url of Gotify server (overrides config)')
     groupUrlOrConfig.add_argument('-c', '--config', help='file path of a yaml config file')
@@ -44,7 +44,7 @@ def parseArgs():
     groupTokenOrKey.add_argument('-a', '--app-token', help='gotify app token to which to send the notification')
     groupTokenOrKey.add_argument('-k', '--key', help='lookup token from key in the config file')
     parser.add_argument('-t', '--title', help='the title of the notification')
-    parser.add_argument('-m', '--message', help='the message of the notification (\'-\' to read from stdin)')
+    parser.add_argument('-m', '--message', help='the message of the notification (use \'-\' to read from stdin)')
     parser.add_argument('-p', '--priority', type=int, help='the priority of the notification')
     return parser.parse_args()
 
