@@ -12,7 +12,7 @@ First install its dependencies by running:
 pip3 install -r requirements.txt
 ```
 
-Then copy and rename the `gotify-example.yaml` file to `gotify.yaml`. Edit the configuation file to suit your needs and place it in one of the locations described in the [configuration](#Default config file locations) section.
+Then copy and rename the `gotify-example.yaml` file to `gotify.yaml`. Edit the configuation file to suit your needs and place it in one of the locations described in the [configuration](#default-config-file-locations) section.
 
 Install the script by copying it to a folder in your system's path, such as `/usr/local/bin`. You may also wish to rename the command in this step to for example if you want to have a shorter command to call.
 
