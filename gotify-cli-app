@@ -10,7 +10,31 @@ import requests
 APP_NAME = 'gotify-cli-app'
 CONFIG_NAME = 'gotify'
 
+config = None
+
 def main():
+    # Parde and declare arguments
+    args = parseArgs()
+
+    # Check if url argument supplied (if so, don't load config)
+    url = parseURLOrConfig(args)
+    # Load app token (either from map, from argument, or default from config)
+    token = parseToken(args)
+    # Load title (either from argument, or default from config)
+    title = parseTitle(args)
+    # Load message (either from argument, from stdin, or default from config)
+    message = parseMessage(args)
+    # Load priority (either from argument, or default from config)
+    priority = parsePriority(args)
+
+    # Perform request
+    resp = doRequest(url, token, title, message, priority)
+
+    # Print request result only if it fails
+    if resp.status_code is not requests.codes.ok:
+        sys.exit(bytes.decode(resp.content))
+
+def parseArgs():
     # Argument parser declaration
     parser = argparse.ArgumentParser(description='Gotify cli')
     groupUrlOrConfig = parser.add_mutually_exclusive_group()
@@ -22,12 +46,11 @@ def main():
     parser.add_argument('-t', '--title', help='the title of the notification')
     parser.add_argument('-m', '--message', help='the message of the notification (\'-\' to read from stdin)')
     parser.add_argument('-p', '--priority', type=int, help='the priority of the notification')
-    args = parser.parse_args()
+    return parser.parse_args()
 
-    # The messy default value assigments below are unfortunately necessary since
-    # default values may be loaded from a config file supplied as an argument
-
-    # Check if url argument supplied (if so, don't load config)
+def parseURLOrConfig(args):
+    # Declare variable config as reference to global config variable in this function
+    global config
     if args.url:
         # This check is necessary since at this point in time argparse does not
         # yet support "necessarily inclusive" groups
@@ -35,8 +58,7 @@ def main():
         if not (args.app_token and args.title and args.message) or args.key:
             sys.exit('The following arguments are required when using url argument:\n-a/--app-token -t/--title -m/--message -p/--priority\nAlso -k/--key argument may not be used with url argument')
         # Load url from argument
-        else:
-            url = args.url
+        return args.url
     else:
         # Load config
         if args.config:
@@ -46,43 +68,36 @@ def main():
             # Load config file from predefined locations
             config = loadDefaultConfig()
         # Load url from config
-        url = config['url']
+        return config['url']
 
-    # Load app token (either from map, from argument, or default from config)
+def parseToken(args):
     if args.key:
-        token = loadTokenFromKey(config, args.key)
+        return loadTokenFromKey(config, args.key)
     else:
         if args.app_token:
-            token = args.app_token
+            return args.app_token
         else:
-            token = config['default']['token']
+            return config['default']['token']
 
-    # Load title (either from argument, or default from config)
+def parseTitle(args):
     if args.title:
-        title = args.title
+        return args.title
     else:
-        title = config['default']['title']
+        return config['default']['title']
 
-    # Load message (either from argument, from stdin, or default from config)
+def parseMessage(args):
     if args.message:
-        message = args.message
+        return args.message
         if message is '-':
-            message = sys.stdin.buffer.read()
+            return sys.stdin.buffer.read()
     else:
-        message = config['default']['message']
+        return config['default']['message']
 
-    # Load priority (either from argument, or default from config)
+def parsePriority(args):
     if args.priority:
-        priority = args.priority
+        return args.priority
     else:
-        priority = config['default']['priority']
-
-    # Perform request
-    resp = doRequest(url, token, title, message, priority)
-
-    # Print request result only if it fails
-    if resp.status_code is not requests.codes.ok:
-        sys.exit(bytes.decode(resp.content))
+        return config['default']['priority']
 
 def loadConfig(configFile):
     if os.path.isfile(configFile):
@@ -91,7 +106,6 @@ def loadConfig(configFile):
         file.close()
     else:
         sys.exit('Could not load config: ' + path)
-
     return yaml.load(yamlString)
 
 def loadDefaultConfig():
