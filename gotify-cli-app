@@ -17,7 +17,7 @@ def main():
     args = parseArgs()
 
     # Check if url argument supplied (if so, don't load config)
-    url = parseURLOrConfig(args)
+    url = parseURLAndConfig(args)
     # Load app token (either from map, from argument, or default from config)
     token = parseToken(args)
     # Load title (either from argument, or default from config)
@@ -48,7 +48,7 @@ def parseArgs():
     parser.add_argument('-p', '--priority', type=int, help='the priority of the notification')
     return parser.parse_args()
 
-def parseURLOrConfig(args):
+def parseURLAndConfig(args):
     # Declare variable config as reference to global config variable in this function
     global config
     if args.url:
