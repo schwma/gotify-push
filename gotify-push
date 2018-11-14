@@ -84,7 +84,7 @@ def parseTitle(args):
 def parseMessage(args):
     if args.message is not None:
         if args.message is '-':
-            return sys.stdin.buffer.read()
+            return bytes.decode(sys.stdin.buffer.read())
         return args.message
     return config['default']['message']
 
