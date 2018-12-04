@@ -28,11 +28,7 @@ def main():
     priority = parsePriority(args)
 
     # Perform request
-    resp = doRequest(url, token, title, message, priority)
-
-    # Print request result only if it fails
-    if resp.status_code is not requests.codes.ok:
-        sys.exit(bytes.decode(resp.content))
+    doRequest(url, token, title, message, priority)
 
 def parseArgs():
     # Argument parser declaration
@@ -148,12 +144,19 @@ def loadTokenFromKey(config, key):
 
 def doRequest(url, token, title, message, priority):
     requestURL = urljoin(url, '/message?token=' + token)
-    resp = requests.post(requestURL, json={
-        'title': title,
-        'message': message,
-        'priority': priority
-    })
-    return resp
+    try:
+        resp = requests.post(requestURL, json={
+            'title': title,
+            'message': message,
+            'priority': priority
+        })
+    except requests.exceptions.RequestException as e:
+        # Print exception if reqeuest fails
+        sys.exit('Could not connect to Gotify server:\n' + str(e))
+
+    # Print request result if server returns http error code
+    if resp.status_code is not requests.codes.ok:
+        sys.exit(bytes.decode(resp.content))
 
 if __name__ == "__main__":
     main()
