@@ -96,7 +96,7 @@ def loadConfig(configFile):
         file.close()
     else:
         sys.exit('Could not load config: ' + path)
-    return yaml.load(yamlString)
+    return yaml.load(yamlString, Loader=yaml.SafeLoader)
 
 def loadDefaultConfig():
     configFileLocations = getDefaultConfigFileLocations()
@@ -116,7 +116,7 @@ def loadDefaultConfig():
         configFileLocations = '\n'.join(map(str, getDefaultConfigFileLocations()))
         sys.exit('No config file found! Possible locations are:\n' + configFileLocations)
 
-    return yaml.load(yamlString)
+    return yaml.load(yamlString, Loader=yaml.SafeLoader)
 
 def getDefaultConfigFileLocations():
     HOME = os.path.expanduser('~')
